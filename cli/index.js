@@ -86,7 +86,40 @@ const app = {
                 }
             }
         ]).then(function(answer) {
+            // Switch case based upon user input
             console.log("You chose Report ID: " + answer.id);
+            switch (parseInt(answer.id)) {
+                case 1:
+                    console.log("Report 1");
+                    break;
+                case 2:
+                    app.report2();
+                    break;
+                case 3:
+                    console.log("Report 3");
+                    break;
+                case 4:
+                    console.log("Report 4");
+                    break;
+                default:
+                    return null;
+            }
+        });
+    },
+    // Assets Under Management Summary
+    report2: function() {
+        console.log("Report 2 - " + reportTypes[1].name);
+        const query = "SELECT DISTINCT SALES_REP, INVESTOR, TXN_SHARES * TXN_PRICE AS ASSET_VALUE FROM invest";
+        connection.query(query, function(err, result) {
+            if (err) {
+                console.error("query error: " + err);
+            }
+            // Clear the txnArr for each new query
+            txnArr = [];
+            for (var i = 0; i < result.length; i++) {
+                txnArr.push(result[i]);
+            }
+            console.table(txnArr);
         });
     }
 };
