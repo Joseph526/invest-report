@@ -109,17 +109,36 @@ const app = {
     // Assets Under Management Summary
     report2: function() {
         console.log("Report 2 - " + reportTypes[1].name);
-        const query = "SELECT DISTINCT SALES_REP, INVESTOR, TXN_SHARES * TXN_PRICE AS ASSET_VALUE FROM invest";
+        const query = "SELECT SALES_REP, INVESTOR, TXN_TYPE, TXN_SHARES * TXN_PRICE AS ASSET_VALUE FROM invest";
         connection.query(query, function(err, result) {
             if (err) {
                 console.error("query error: " + err);
             }
             // Clear the txnArr for each new query
             txnArr = [];
-            for (var i = 0; i < result.length; i++) {
+            for (let i = 0; i < result.length; i++) {
+                // Convert SELL txn to negative value for P/L calc
+                if(result[i].TXN_TYPE === "SELL") {
+                    result[i].ASSET_VALUE *= -1;
+                }
                 txnArr.push(result[i]);
             }
-            console.table(txnArr);
+            // Sum the ASSET_VALUE held for each investor, using a reduce array method
+            let resultArr = txnArr.reduce(function(res, obj) {
+                try {
+                    if (!(obj.INVESTOR in res)) {
+                        res.__array.push(res[obj.INVESTOR] = obj);
+                    }
+                    else {
+                        res[obj.INVESTOR].ASSET_VALUE += obj.ASSET_VALUE;
+                    }
+                    return res;
+                }
+                catch (e) {
+                    console.error(e.type + ": " + e.message);
+                }
+            }, { __array: [] });
+            console.table(resultArr.__array);
         });
     }
 };
