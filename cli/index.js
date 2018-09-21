@@ -51,18 +51,7 @@ const app = {
     },
     // Display table of all transactions
     display: function(callback) {
-        const query = "SELECT * FROM invest";
-        connection.query(query, function(err, result) {
-            if (err) {
-                console.error("query error: " + err);
-            }
-            // Clear the txnArr for each new query
-            txnArr = [];
-            for (var i = 0; i < result.length; i++) {
-                txnArr.push(result[i]);
-            }
-            console.table(reportTypes);
-        });
+        console.table(reportTypes);
         // Goto prompt via callback
         setTimeout(callback, 500);
     },
@@ -109,7 +98,7 @@ const app = {
     // Assets Under Management Summary
     report2: function() {
         console.log("Report 2 - " + reportTypes[1].name);
-        const query = "SELECT SALES_REP, INVESTOR, TXN_TYPE, TXN_SHARES * TXN_PRICE AS ASSET_VALUE FROM invest";
+        const query = "SELECT SALES_REP, INVESTOR, TXN_TYPE, (CASE WHEN TXN_TYPE = 'SELL' THEN -TXN_SHARES * TXN_PRICE ELSE TXN_SHARES * TXN_PRICE END) AS ASSET_VALUE FROM invest";
         connection.query(query, function(err, result) {
             if (err) {
                 console.error("query error: " + err);
@@ -117,10 +106,6 @@ const app = {
             // Clear the txnArr for each new query
             txnArr = [];
             for (let i = 0; i < result.length; i++) {
-                // Convert SELL txn to negative value for P/L calc
-                if(result[i].TXN_TYPE === "SELL") {
-                    result[i].ASSET_VALUE *= -1;
-                }
                 txnArr.push(result[i]);
             }
             // Sum the ASSET_VALUE held for each investor, using a reduce array method
