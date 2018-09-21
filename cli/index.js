@@ -125,6 +125,9 @@ const app = {
             // }, { __array: [] });
             // console.table(resultArr.__array);
             console.table(txnArr);
+
+            // Goto checkout for new report or quit
+            app.checkout();
         });
     },
     // Break Report
@@ -157,6 +160,9 @@ const app = {
                 }
             });
             console.table(resultArr);
+
+            // Goto checkout for new report or quit
+            app.checkout();
         });
     },
     // Investor Profit
@@ -219,6 +225,25 @@ const app = {
             // Concatenate and display the results
             resultArr = resultArr.concat(stockFundReducer.__array).concat(bondFundReducer.__array);
             console.table(resultArr);
+
+            // Goto checkout for new report or quit
+            app.checkout();
+        });
+    },
+    checkout: function() {
+        inquirer.prompt({
+            name: "restart",
+            type: "confirm",
+            message: "Would you like to run another report?"
+        }).then(function(answer) {
+            if (answer.restart) {
+                // Restart the order process
+                app.main();
+            }
+            else {
+                console.log("Thanks for viewing!");
+                connection.end();
+            }
         });
     }
 };
