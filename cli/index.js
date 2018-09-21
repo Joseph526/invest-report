@@ -98,7 +98,7 @@ const app = {
     // Assets Under Management Summary
     report2: function() {
         console.log("Report 2 - " + reportTypes[1].name);
-        const query = "SELECT SALES_REP, INVESTOR, TXN_TYPE, CAST((CASE WHEN TXN_TYPE = 'SELL' THEN -TXN_SHARES * TXN_PRICE ELSE TXN_SHARES * TXN_PRICE END) AS DECIMAL(10,2)) AS ASSET_VALUE FROM invest";
+        const query = "SELECT SALES_REP, INVESTOR, TXN_TYPE, CAST(SUM((CASE WHEN TXN_TYPE = 'SELL' THEN -TXN_SHARES * TXN_PRICE ELSE TXN_SHARES * TXN_PRICE END)) AS DECIMAL(10,2)) AS ASSET_VALUE FROM invest GROUP BY INVESTOR";
         connection.query(query, function(err, result) {
             if (err) {
                 console.error("query error: " + err);
@@ -108,22 +108,23 @@ const app = {
             for (let i = 0; i < result.length; i++) {
                 txnArr.push(result[i]);
             }
-            // Sum the ASSET_VALUE held for each investor, using a reduce array method
-            let resultArr = txnArr.reduce(function(res, obj) {
-                try {
-                    if (!(obj.INVESTOR in res)) {
-                        res.__array.push(res[obj.INVESTOR] = obj);
-                    }
-                    else {
-                        res[obj.INVESTOR].ASSET_VALUE += obj.ASSET_VALUE;
-                    }
-                    return res;
-                }
-                catch (e) {
-                    console.error(e.type + ": " + e.message);
-                }
-            }, { __array: [] });
-            console.table(resultArr.__array);
+            // // Sum the ASSET_VALUE held for each investor, using a reduce array method
+            // let resultArr = txnArr.reduce(function(res, obj) {
+            //     try {
+            //         if (!(obj.INVESTOR in res)) {
+            //             res.__array.push(res[obj.INVESTOR] = obj);
+            //         }
+            //         else {
+            //             res[obj.INVESTOR].ASSET_VALUE += obj.ASSET_VALUE;
+            //         }
+            //         return res;
+            //     }
+            //     catch (e) {
+            //         console.error(e.type + ": " + e.message);
+            //     }
+            // }, { __array: [] });
+            // console.table(resultArr.__array);
+            console.table(txnArr);
         });
     },
     // Break Report
