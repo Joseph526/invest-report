@@ -98,7 +98,7 @@ const app = {
     // Assets Under Management Summary
     report2: function() {
         console.log("Report 2 - " + reportTypes[1].name);
-        const query = "SELECT SALES_REP, INVESTOR, TXN_TYPE, (CASE WHEN TXN_TYPE = 'SELL' THEN -TXN_SHARES * TXN_PRICE ELSE TXN_SHARES * TXN_PRICE END) AS ASSET_VALUE FROM invest";
+        const query = "SELECT SALES_REP, INVESTOR, TXN_TYPE, CAST((CASE WHEN TXN_TYPE = 'SELL' THEN -TXN_SHARES * TXN_PRICE ELSE TXN_SHARES * TXN_PRICE END) AS DECIMAL(10,2)) AS ASSET_VALUE FROM invest";
         connection.query(query, function(err, result) {
             if (err) {
                 console.error("query error: " + err);
