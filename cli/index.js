@@ -162,7 +162,7 @@ const app = {
     // Investor Profit
     report4: function() {
         console.log("Report 4 - " + reportTypes[3].name);
-        const query = "SELECT INVESTOR, FUND, TXN_TYPE, (CASE WHEN TXN_TYPE = 'SELL' THEN -TXN_SHARES ELSE TXN_SHARES END) AS TXN_SHARES, CAST((CASE WHEN TXN_TYPE = 'SELL' THEN -TXN_SHARES * TXN_PRICE ELSE TXN_SHARES * TXN_PRICE END) AS DECIMAL(10,2)) AS PROFIT_LOSS FROM invest";
+        const query = "SELECT INVESTOR, FUND, TXN_TYPE, CAST((CASE WHEN TXN_TYPE = 'SELL' THEN -TXN_SHARES * TXN_PRICE ELSE TXN_SHARES * TXN_PRICE END) AS DECIMAL(10,2)) AS PROFIT_LOSS FROM invest";
         connection.query(query, function(err, result) {
             if (err) {
                 console.error("query error: " + err);
