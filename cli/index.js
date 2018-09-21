@@ -162,7 +162,7 @@ const app = {
     // Investor Profit
     report4: function() {
         console.log("Report 4 - " + reportTypes[3].name);
-        const query = "SELECT INVESTOR, FUND, TXN_TYPE, SUM((CASE WHEN TXN_TYPE = 'SELL' THEN -TXN_SHARES ELSE TXN_SHARES END)) AS TXN_SHARES, CAST(SUM((CASE WHEN TXN_TYPE = 'SELL' THEN -TXN_SHARES * TXN_PRICE ELSE TXN_SHARES * TXN_PRICE END)) AS DECIMAL(10,2)) AS PROFIT_LOSS FROM invest GROUP BY INVESTOR, FUND";
+        const query = "SELECT INVESTOR, FUND, TXN_TYPE, (CASE WHEN TXN_TYPE = 'SELL' THEN -TXN_SHARES ELSE TXN_SHARES END) AS TXN_SHARES, CAST((CASE WHEN TXN_TYPE = 'SELL' THEN -TXN_SHARES * TXN_PRICE ELSE TXN_SHARES * TXN_PRICE END) AS DECIMAL(10,2)) AS PROFIT_LOSS FROM invest";
         connection.query(query, function(err, result) {
             if (err) {
                 console.error("query error: " + err);
@@ -172,7 +172,53 @@ const app = {
             for (let i = 0; i < result.length; i++) {
                 txnArr.push(result[i]);
             }
-            console.table(txnArr);
+            // Sum the PROFIT_LOSS for each investor and fund, using a reduce array method
+            let resultArr = [];
+            // Filter for only Stock Fund results first
+            let stockFund = txnArr.filter(function(item) {
+                if (item.FUND === "STOCK FUND") {
+                    return item;
+                }
+            });
+            let stockFundReducer = stockFund.reduce(function(res, obj) {
+                try {
+                    if (!(obj.INVESTOR in res)) {
+                        res.__array.push(res[obj.INVESTOR] = obj);
+                    }
+                    else {
+                        res[obj.INVESTOR].PROFIT_LOSS += obj.PROFIT_LOSS;
+                    }
+                    return res;
+                }
+                catch (e) {
+                    console.error(e.type + ": " + e.message);
+                }
+            }, { __array: [] });
+
+            // Repeat the procedure for Bond Fund
+            let bondFund = txnArr.filter(function(item) {
+                if (item.FUND === "BOND FUND") {
+                    return item;
+                }
+            });
+            let bondFundReducer = bondFund.reduce(function(res, obj) {
+                try {
+                    if (!(obj.INVESTOR in res)) {
+                        res.__array.push(res[obj.INVESTOR] = obj);
+                    }
+                    else {
+                        res[obj.INVESTOR].PROFIT_LOSS += obj.PROFIT_LOSS;
+                    }
+                    return res;
+                }
+                catch (e) {
+                    console.error(e.type + ": " + e.message);
+                }
+            }, { __array: [] });
+
+            // Concatenate and display the results
+            resultArr = resultArr.concat(stockFundReducer.__array).concat(bondFundReducer.__array);
+            console.table(resultArr);
         });
     }
 };
