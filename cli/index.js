@@ -88,7 +88,7 @@ const app = {
                     app.report3();
                     break;
                 case 4:
-                    console.log("Report 4");
+                    app.report4();
                     break;
                 default:
                     return null;
@@ -157,6 +157,22 @@ const app = {
                 }
             });
             console.table(resultArr);
+        });
+    },
+    // Investor Profit
+    report4: function() {
+        console.log("Report 4 - " + reportTypes[3].name);
+        const query = "SELECT INVESTOR, FUND, TXN_TYPE, SUM((CASE WHEN TXN_TYPE = 'SELL' THEN -TXN_SHARES ELSE TXN_SHARES END)) AS TXN_SHARES, CAST(SUM((CASE WHEN TXN_TYPE = 'SELL' THEN -TXN_SHARES * TXN_PRICE ELSE TXN_SHARES * TXN_PRICE END)) AS DECIMAL(10,2)) AS PROFIT_LOSS FROM invest GROUP BY INVESTOR, FUND";
+        connection.query(query, function(err, result) {
+            if (err) {
+                console.error("query error: " + err);
+            }
+            // Clear the txnArr for each new query
+            txnArr = [];
+            for (let i = 0; i < result.length; i++) {
+                txnArr.push(result[i]);
+            }
+            console.table(txnArr);
         });
     }
 };
