@@ -140,7 +140,23 @@ const app = {
             for (let i = 0; i < result.length; i++) {
                 txnArr.push(result[i]);
             }
-            console.table(txnArr);
+            // Add error message to array object if negative cash or share balance
+            let resultArr = txnArr.map(function(item) {
+                try {
+                    item.ERROR_MSG = "";
+                    if (item.ASSET_VALUE < 0) {
+                        item.ERROR_MSG += "Negative cash balance ";
+                    }
+                    if (item.TXN_SHARES < 0) {
+                        item.ERROR_MSG += "Negative share balance ";
+                    }
+                    return item;
+                }
+                catch (e) {
+                    console.error(e.type + ": " + e.message);
+                }
+            });
+            console.table(resultArr);
         });
     }
 };
