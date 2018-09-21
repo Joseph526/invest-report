@@ -96,7 +96,7 @@ const app = {
                     app.report2();
                     break;
                 case 3:
-                    console.log("Report 3");
+                    app.report3();
                     break;
                 case 4:
                     console.log("Report 4");
@@ -140,5 +140,9 @@ const app = {
             }, { __array: [] });
             console.table(resultArr.__array);
         });
+    },
+    // Break Report
+    report3: function() {
+        console.log("Report 3 - " + reportTypes[2].name);
     }
 };
