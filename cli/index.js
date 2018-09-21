@@ -130,5 +130,17 @@ const app = {
     // Break Report
     report3: function() {
         console.log("Report 3 - " + reportTypes[2].name);
+        const query = "SELECT INVESTOR, FUND, TXN_TYPE, SUM((CASE WHEN TXN_TYPE = 'SELL' THEN -TXN_SHARES ELSE TXN_SHARES END)) AS TXN_SHARES, CAST(SUM((CASE WHEN TXN_TYPE = 'SELL' THEN -TXN_SHARES * TXN_PRICE ELSE TXN_SHARES * TXN_PRICE END)) AS DECIMAL(10,2)) AS ASSET_VALUE FROM invest GROUP BY INVESTOR, FUND";
+        connection.query(query, function(err, result) {
+            if (err) {
+                console.error("query error: " + err);
+            }
+            // Clear the txnArr for each new query
+            txnArr = [];
+            for (let i = 0; i < result.length; i++) {
+                txnArr.push(result[i]);
+            }
+            console.table(txnArr);
+        });
     }
 };
