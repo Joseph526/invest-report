@@ -117,7 +117,7 @@ const app = {
     // Assets Under Management Summary
     report2: function() {
         console.log("Report 2 - " + reportTypes[1].name);
-        const query = "SELECT SALES_REP, TXN_TYPE, CAST(SUM((CASE WHEN TXN_TYPE = 'SELL' THEN -TXN_SHARES * TXN_PRICE ELSE TXN_SHARES * TXN_PRICE END)) AS DECIMAL(10,2)) AS ASSET_VALUE FROM invest GROUP BY SALES_REP";
+        const query = "SELECT SALES_REP, CAST(SUM((CASE WHEN TXN_TYPE = 'SELL' THEN -TXN_SHARES * TXN_PRICE ELSE TXN_SHARES * TXN_PRICE END)) AS DECIMAL(10,2)) AS ASSET_VALUE FROM invest GROUP BY SALES_REP";
         connection.query(query, function(err, result) {
             if (err) {
                 console.error("query error: " + err);
@@ -152,7 +152,7 @@ const app = {
     // Break Report
     report3: function() {
         console.log("Report 3 - " + reportTypes[2].name);
-        const query = "SELECT INVESTOR, FUND, TXN_TYPE, SUM((CASE WHEN TXN_TYPE = 'SELL' THEN -TXN_SHARES ELSE TXN_SHARES END)) AS TXN_SHARES, CAST(SUM((CASE WHEN TXN_TYPE = 'SELL' THEN -TXN_SHARES * TXN_PRICE ELSE TXN_SHARES * TXN_PRICE END)) AS DECIMAL(10,2)) AS ASSET_VALUE FROM invest GROUP BY INVESTOR, FUND";
+        const query = "SELECT INVESTOR, FUND, SUM((CASE WHEN TXN_TYPE = 'SELL' THEN -TXN_SHARES ELSE TXN_SHARES END)) AS TXN_SHARES, CAST(SUM((CASE WHEN TXN_TYPE = 'SELL' THEN -TXN_SHARES * TXN_PRICE ELSE TXN_SHARES * TXN_PRICE END)) AS DECIMAL(10,2)) AS ASSET_VALUE FROM invest GROUP BY INVESTOR, FUND";
         connection.query(query, function(err, result) {
             if (err) {
                 console.error("query error: " + err);
@@ -187,7 +187,7 @@ const app = {
     // Investor Profit
     report4: function() {
         console.log("Report 4 - " + reportTypes[3].name);
-        const query = "SELECT INVESTOR, FUND, TXN_TYPE, CAST((CASE WHEN TXN_TYPE = 'SELL' THEN -TXN_SHARES * TXN_PRICE ELSE TXN_SHARES * TXN_PRICE END) AS DECIMAL(10,2)) AS PROFIT_LOSS FROM invest";
+        const query = "SELECT INVESTOR, FUND, CAST((CASE WHEN TXN_TYPE = 'SELL' THEN -TXN_SHARES * TXN_PRICE ELSE TXN_SHARES * TXN_PRICE END) AS DECIMAL(10,2)) AS PROFIT_OR_LOSS FROM invest";
         connection.query(query, function(err, result) {
             if (err) {
                 console.error("query error: " + err);
@@ -211,7 +211,7 @@ const app = {
                         res.__array.push(res[obj.INVESTOR] = obj);
                     }
                     else {
-                        res[obj.INVESTOR].PROFIT_LOSS += obj.PROFIT_LOSS;
+                        res[obj.INVESTOR].PROFIT_OR_LOSS += obj.PROFIT_OR_LOSS;
                     }
                     return res;
                 }
@@ -232,7 +232,7 @@ const app = {
                         res.__array.push(res[obj.INVESTOR] = obj);
                     }
                     else {
-                        res[obj.INVESTOR].PROFIT_LOSS += obj.PROFIT_LOSS;
+                        res[obj.INVESTOR].PROFIT_OR_LOSS += obj.PROFIT_OR_LOSS;
                     }
                     return res;
                 }
