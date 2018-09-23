@@ -128,22 +128,6 @@ const app = {
             for (let i = 0; i < result.length; i++) {
                 txnArr.push(result[i]);
             }
-            // // Sum the ASSET_VALUE held for each investor, using a reduce array method
-            // let resultArr = txnArr.reduce(function(res, obj) {
-            //     try {
-            //         if (!(obj.INVESTOR in res)) {
-            //             res.__array.push(res[obj.INVESTOR] = obj);
-            //         }
-            //         else {
-            //             res[obj.INVESTOR].ASSET_VALUE += obj.ASSET_VALUE;
-            //         }
-            //         return res;
-            //     }
-            //     catch (e) {
-            //         console.error(e.type + ": " + e.message);
-            //     }
-            // }, { __array: [] });
-            // console.table(resultArr.__array);
 
             // Display results in table format
             console.table(txnArr);
