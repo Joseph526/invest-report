@@ -191,7 +191,7 @@ const app = {
     // Investor Profit
     report4: function() {
         console.log("Report 4 - " + reportTypes[3].name);
-        const query = "SELECT INVESTOR, FUND, CAST((CASE WHEN TXN_TYPE = 'SELL' THEN -TXN_SHARES * TXN_PRICE ELSE TXN_SHARES * TXN_PRICE END) AS DECIMAL(10,2)) AS PROFIT_OR_LOSS FROM invest";
+        const query = "SELECT INVESTOR, FUND, TXN_TYPE, CAST((CASE WHEN TXN_TYPE = 'SELL' THEN -TXN_SHARES * TXN_PRICE ELSE TXN_SHARES * TXN_PRICE END) AS DECIMAL(10,2)) AS PROFIT_OR_LOSS FROM invest";
         connection.query(query, function(err, result) {
             if (err) {
                 console.error("query error: " + err);
@@ -201,7 +201,7 @@ const app = {
             for (let i = 0; i < result.length; i++) {
                 txnArr.push(result[i]);
             }
-            // Sum the PROFIT_LOSS for each investor and fund, using a reduce array method
+            // Sum the PROFIT_OR_LOSS for each investor and fund, using a reduce array method
             let resultArr = [];
             // Filter for only Stock Fund results first
             let stockFund = txnArr.filter(function(item) {
@@ -271,3 +271,5 @@ const app = {
         });
     }
 };
+
+module.exports = app;
