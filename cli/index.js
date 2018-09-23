@@ -108,6 +108,7 @@ const app = {
             for (let i = 0; i < result.length; i++) {
                 txnArr.push(result[i]);
             }
+            // Display results in table format
             console.table(txnArr);
 
             // Goto checkout for new report or quit
@@ -143,6 +144,8 @@ const app = {
             //     }
             // }, { __array: [] });
             // console.table(resultArr.__array);
+
+            // Display results in table format
             console.table(txnArr);
 
             // Goto checkout for new report or quit
@@ -178,6 +181,7 @@ const app = {
                     console.error(e.type + ": " + e.message);
                 }
             });
+            // Display results in table format
             console.table(resultArr);
 
             // Goto checkout for new report or quit
@@ -249,6 +253,7 @@ const app = {
             app.checkout();
         });
     },
+    // Prompt user to run another report or quit
     checkout: function() {
         inquirer.prompt({
             name: "restart",
