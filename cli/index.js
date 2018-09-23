@@ -79,7 +79,7 @@ const app = {
             console.log("You chose Report ID: " + answer.id);
             switch (parseInt(answer.id)) {
                 case 1:
-                    console.log("Report 1");
+                    app.report1();
                     break;
                 case 2:
                     app.report2();
@@ -93,6 +93,25 @@ const app = {
                 default:
                     return null;
             }
+        });
+    },
+    // Sales Summary
+    report1: function() {
+        console.log("Report 1 - " + reportTypes[0].name);
+        const query = "SELECT SALES_REP, TXN_TYPE, CAST(SUM(TXN_SHARES * TXN_PRICE) AS DECIMAL(10,2)) AS ITD_SALES FROM invest WHERE TXN_TYPE = 'SELL' GROUP BY SALES_REP";
+        connection.query(query, function(err, result) {
+            if (err) {
+                console.error("query error: " + err);
+            }
+            // Clear the txnArr for each new query
+            txnArr = [];
+            for (let i = 0; i < result.length; i++) {
+                txnArr.push(result[i]);
+            }
+            console.table(txnArr);
+
+            // Goto checkout for new report or quit
+            app.checkout();
         });
     },
     // Assets Under Management Summary
