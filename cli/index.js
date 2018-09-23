@@ -98,7 +98,7 @@ const app = {
     // Sales Summary
     report1: function() {
         console.log("Report 1 - " + reportTypes[0].name);
-        const query = "SELECT SALES_REP, TXN_TYPE, CAST(SUM(TXN_SHARES * TXN_PRICE) AS DECIMAL(10,2)) AS ITD_SALES FROM invest WHERE TXN_TYPE = 'SELL' GROUP BY SALES_REP";
+        const query = "SELECT SALES_REP, TXN_TYPE, CAST(SUM((CASE WHEN MONTH(NOW()) = MONTH(TXN_DATE) THEN TXN_SHARES * TXN_PRICE ELSE '0' END)) AS DECIMAL(10,2)) AS MTD_SALES, CAST(SUM((CASE WHEN QUARTER(NOW()) = QUARTER(TXN_DATE) THEN TXN_SHARES * TXN_PRICE ELSE '0' END)) AS DECIMAL(10,2)) AS QTD_SALES, CAST(SUM((CASE WHEN YEAR(NOW()) = YEAR(TXN_DATE) THEN TXN_SHARES * TXN_PRICE ELSE '0' END)) AS DECIMAL(10,2)) AS YTD_SALES, CAST(SUM(TXN_SHARES * TXN_PRICE) AS DECIMAL(10,2)) AS ITD_SALES FROM invest WHERE TXN_TYPE = 'SELL' GROUP BY SALES_REP";
         connection.query(query, function(err, result) {
             if (err) {
                 console.error("query error: " + err);
